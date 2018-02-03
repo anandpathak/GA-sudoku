@@ -74,9 +74,20 @@ class Generator:
             j = int(elem % 9)
             problem[i][j] = 0
         return problem
+    def position(self, problem):
+        '''
+            return the array of position with no value
+        '''
+        pos = []
+        for i, row in enumerate(problem):
+            for j, val in enumerate(row):
+                if val == 0:
+                    pos.append([i, j])
+        return pos
 GEN = Generator()
 SOLUTION = GEN.solution_matrix()
-PROBLEM = GEN.problem_matrix(50)
+PROBLEM = GEN.problem_matrix(5)
 #np.savetxt('solution.txt', SOLUTION, fmt='%d')
 #np.savetxt('problem.txt', PROBLEM, fmt='%d')
+
             
