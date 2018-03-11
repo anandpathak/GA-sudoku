@@ -124,7 +124,7 @@ class GeneticSolution:
             if score == 0:
                 return True, sample
             for position in sample:
-              position[3]= score * (position[3] +1 ) # + 1 in position to avoid 0 impact if position is right but        
+              position[3]= score + (position[3]  ) # + 1 in position to avoid 0 impact if position is right but        
         #convert score into probability
         print("before alteration\n", samples )
         for i in range(self.number_of_missing_values):
@@ -141,15 +141,16 @@ class GeneticSolution:
         for sample in samples:
             for i in range(self.number_of_missing_values):
                 probabilities = np.array(samples[:,i,3])
+                probabilities = 1 - probabilities
                 probabilities  /= probabilities.sum() 
-                sample[i,2] = np.random.choice(samples[:,i,2], p = probabilities)
+                sample[i,2] = np.random.choice(samples[:,i,2], replace=False,p = probabilities)
                 sample[i,3] = 0 
         return samples
 
-GS = GeneticSolution(15,2)
+GS = GeneticSolution(35,2000)
 INIT_SAMPLE = GS.firstSampleSpace()
 print("Initial Sample space\n", INIT_SAMPLE)
-for i in range(5000):
+for i in range(10):
     SOLUTION, CALCULATED_SAMPLE = GS.fitnessCalculation(INIT_SAMPLE)
     if SOLUTION == True:
         print ("iteration : ", i," \nsolution:, \n",CALCULATED_SAMPLE)
