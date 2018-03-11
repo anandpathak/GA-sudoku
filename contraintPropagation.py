@@ -38,6 +38,7 @@ class Solve:
         '''
             get possible values for the position
         '''
+       
         val = self.domain[row][col]
         val = list(set(val) - set (self.problem[row,:]))
         val = list(set(val) - set (self.problem[:,col]))
@@ -112,7 +113,8 @@ class Solve:
                 for i in range(9):
                         if i != one[1] and i != two[1] and i in self.domain.get(one[0],{}):
                             earlier = len(self.domain[one[0]][i])
-                            self.domain[one[0]][i] = list(set(self.domain[one[0]][i]) - set (self.domain[one[0]][one[1]]))
+                            if earlier !=2:
+                                self.domain[one[0]][i] = list(set(self.domain[one[0]][i]) - set (self.domain[one[0]][one[1]]))
                             if earlier > len(self.domain[one[0]][i]):
                                 count= count +1
             #is one and two in same column ?  
@@ -121,7 +123,8 @@ class Solve:
                     if i != one[0] and i !=two[0] and i in self.domain:
                         if one[1] in self.domain[i]:
                             earlier = len(self.domain[i][one[1]])
-                            self.domain[i][one[1]] = list(set(self.domain[i][one[1]]) - set(self.domain[one[0]][one[1]]))
+                            if earlier !=2:
+                                self.domain[i][one[1]] = list(set(self.domain[i][one[1]]) - set(self.domain[one[0]][one[1]]))
                             if earlier > len(self.domain[i][one[1]]):
                                 count= count +1
             #one and two in same box
@@ -132,7 +135,8 @@ class Solve:
                     for c1 in range (c,c+3):
                         if c1 in  self.domain.get(r1,{}) and [r1,c1] != one and [r1,c1] !=two:
                             earlier = len(self.domain[r1][c1])
-                            self.domain[r1][c1] = list(set(self.domain[r1][c1]) - set(self.domain[one[0]][one[1]]))
+                            if earlier !=2:
+                                self.domain[r1][c1] = list(set(self.domain[r1][c1]) - set(self.domain[one[0]][one[1]]))
                             if earlier >  len(self.domain[r1][c1]) :
                                 count= count +1
             return count
@@ -174,7 +178,7 @@ class Solve:
             self.getSolution()
         else:
             #check how many positions are left. 
-            print("before filter\n",self.domain)
+            print("before filter\n",self.domain, "\n before backTrack\n", self.problem)
             position = self.filterDomain() 
             self.LittleBackTrack(position,0)
             print ("filter domain",self.domain,"\n",self.problem)
