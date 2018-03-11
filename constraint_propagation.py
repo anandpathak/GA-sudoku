@@ -1,5 +1,5 @@
 '''
-    Solve sudoku using Genetic Algorithm
+    Solve sudoku using constraint propagation with naken twin strategy
 '''
 import random
 import numpy as np
