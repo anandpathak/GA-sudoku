@@ -6,7 +6,7 @@ import numpy as np
 from generator import Generator
 import sys
 
-GENERATOR = Generator()
+GENERATOR = Generator(np.zeros((9, 9)))
 class Solve:
     '''
         generate the problem sudoku and then solve it with naked twin technique
@@ -179,9 +179,14 @@ class Solve:
         else:
             #check how many positions are left. 
             print("before filter\n",self.domain, "\n before backTrack\n", self.problem)
-            position = self.filterDomain() 
-            self.LittleBackTrack(position,0)
-            print ("filter domain",self.domain,"\n",self.problem)
+            #position = self.filterDomain() 
+            out= Generator(self.problem)
+            output= out.solution_matrix()
+            if np.array_equal(output, self.solution):
+                print("correct answer")
+            else:
+                print ("wrong solution")
+            print ("filter domain",self.domain,"\n",self.problem, "\noutput:\n", out.solution_matrix())
     def LittleBackTrack(self, position, i):
         '''
             iteratively put a value to a position and proceed until final solution is achived
