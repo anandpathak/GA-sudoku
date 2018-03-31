@@ -5,8 +5,11 @@ import random
 import numpy as np
 from generator import Generator
 import sys
+import time
+from BackTrack import BackTrack
 
-GENERATOR = Generator()
+
+GENERATOR = Generator(np.zeros((9, 9)))
 class Solve:
     '''
         generate the problem sudoku and then solve it with naked twin technique
@@ -24,7 +27,7 @@ class Solve:
         self.position = GENERATOR.position(self.problem)
         self.number_of_missing_values = number_of_missing_values
         self.domain= {}
-        print(self.problem)
+        #print(self.problem)
     def __initialDomain(self):
         '''
             generate a intial dictionary with positions of missing values as key and possible values array 
@@ -160,7 +163,7 @@ class Solve:
             use the methods in sequence to generate the solution
         '''
         count = 0
-        iterate = 0
+        ITERATE = 0
         self.__generateDomain__()
         #print("step: generate domain\n", self.domain )
         while self.__oneReduceContraint__() !=0:
@@ -168,33 +171,31 @@ class Solve:
             self.__generateDomain__()
             #print("one reduced", iterate, "\n", self.domain)
             #sys.stdin.readlines()
-            iterate = iterate +1 
+            ITERATE = ITERATE +1 
         
         count = count + self.__twinReduceContraint__()
         #print("twin reduced", count, "\n", self.domain)
         if count !=0:
             #print(count,"\n",self.problem,"\n",self.position,"\n",self.domain)
             #sys.stdin.readlines()
-            self.getSolution()
+            ITERATE  = ITERATE  + self.getSolution()
+            return ITERATE
         else:
             #check how many positions are left. 
-            print("before filter\n",self.domain, "\n before backTrack\n", self.problem)
-            position = self.filterDomain() 
-            self.LittleBackTrack(position,0)
-            print ("filter domain",self.domain,"\n",self.problem)
-    def LittleBackTrack(self, position, i):
+            #print("before filter\n",self.domain, "\n before backTrack\n", self.problem)
+            #position = self.filterDomain() 
+            out= BackTrack(self.problem)
+            output , count= out.do()
+            
+            #print ("filter domain",self.domain,"\n",self.problem, "\noutput:\n", output)
+            return ITERATE + count
+    def onlyBackTrack(self):
         '''
             iteratively put a value to a position and proceed until final solution is achived
         '''
-        if i >= len(position):
-            return
-        allowed_value = self.__assign_value__(position[i][0],position[i][1])
-        if len(allowed_value) ==0 : 
-            return
-        else:
-            for val in allowed_value:
-                self.problem[position[i][0]][position[i][1]] = val
-                self.LittleBackTrack(position,i+1)
+        out = BackTrack(self.problem)
+        output,count = out.do()
+        return count
 
     def checkSolution(self):
         '''
@@ -205,6 +206,24 @@ class Solve:
         else:   
             return False
 
-SOL=Solve(35)
-SOL.getSolution()
-print(SOL.checkSolution())
+problem_size = [10,15,20,25,30,35,40,45,50,55,60]
+repeat = 10
+data = np.zeros(( len(problem_size)*repeat,5),dtype=int)
+pointer = 0
+for i in problem_size :
+    for  j in range(repeat):
+        data[pointer][0] = i
+        SOL=Solve(i)
+        start_time = time.time()
+        back_iteration = SOL.onlyBackTrack()
+        data[pointer][1] = back_iteration
+        data[pointer][2] = int((time.time() - start_time)*1000)
+
+        start_time = time.time()
+        contraint_iteration = SOL.getSolution()
+        data[pointer][3] =  contraint_iteration
+        data[pointer][4] =  int((time.time() - start_time)*1000)
+        pointer = pointer+1
+        print (data[pointer-1])
+print(data)
+np.savetxt("calculation.csv", data, delimiter=",", fmt= '%10.5f' )
