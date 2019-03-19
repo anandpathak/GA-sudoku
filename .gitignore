@@ -1,3 +1,5 @@
 __pycache__*
+# exclude compiled files
+*.pyc
 solution.py
 *.csv
