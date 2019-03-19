@@ -12,10 +12,11 @@ class Generator:
     '''
         generate 9x9 sudoku matrix using graph coloring method
     '''
-    def __init__(self):
+    def __init__(self, sudoku):
         self.list = ADJACENT_LIST.generate()
         self.colors = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-        self.sudoku = np.zeros((9, 9))
+        #self.sudoku = np.zeros((9, 9))
+        self.sudoku = sudoku
         self.result = np.zeros((9, 9))
     def __assign_color__(self, vertex, colors, r_sudoku):
         '''
@@ -84,9 +85,10 @@ class Generator:
                 if val == 0:
                     pos.append([i, j])
         return pos
-GEN = Generator()
-SOLUTION = GEN.solution_matrix()
-PROBLEM = GEN.problem_matrix(5)
+#sudoku = np.zeros((9, 9))
+#GEN = Generator(sudoku)
+#SOLUTION = GEN.solution_matrix()
+#PROBLEM = GEN.problem_matrix(5)
 #np.savetxt('solution.txt', SOLUTION, fmt='%d')
 #np.savetxt('problem.txt', PROBLEM, fmt='%d')
 
